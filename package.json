@@ -1,0 +1,19 @@
+{
+  "name": "roblox-monitor-dashboard",
+  "version": "1.0.0",
+  "description": "Painel de monitoramento de conta Roblox com backend Node.js",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js"
+  },
+  "keywords": ["roblox", "monitor", "dashboard"],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.18.2"
+  },
+  "engines": {
+    "node": "18.x"
+  }
+}
