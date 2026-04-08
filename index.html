@@ -1,0 +1,634 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Painel de Monitoramento Roblox</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #4F46E5;
+            --primary-light: #6366F1;
+            --secondary: #A855F7;
+            --accent: #EC4899;
+            --bg-light: #F8FAFC;
+            --bg-white: #FFFFFF;
+            --text-dark: #1E293B;
+            --text-gray: #64748B;
+            --border-light: #E2E8F0;
+            --green: #10B981;
+            --red: #EF4444;
+            --blue: #3B82F6;
+            --purple: #8B5CF6;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #EFF6FF 0%, #F3E8FF 50%, #FCE7F3 100% );
+            color: var(--text-dark);
+            min-height: 100vh;
+        }
+
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Sora', sans-serif;
+            font-weight: 700;
+        }
+
+        header {
+            position: sticky;
+            top: 0;
+            z-index: 50;
+            backdrop-filter: blur(10px);
+            background: rgba(255, 255, 255, 0.3);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .header-container {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .header-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            background: linear-gradient(135deg, #4F46E5 0%, #A855F7 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 24px;
+        }
+
+        .header-title h1 {
+            font-size: 24px;
+            background: linear-gradient(135deg, #4F46E5 0%, #A855F7 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .header-title p {
+            font-size: 12px;
+            color: var(--text-gray);
+        }
+
+        .header-right {
+            text-align: right;
+        }
+
+        .header-right p:first-child {
+            font-size: 12px;
+            color: var(--text-gray);
+        }
+
+        .header-right p:last-child {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--text-dark);
+        }
+
+        main {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 2rem 1rem;
+        }
+
+        .tabs-container {
+            width: 100%;
+        }
+
+        .tabs-list {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            max-width: 400px;
+            margin: 0 auto 2rem;
+            gap: 0.5rem;
+            backdrop-filter: blur(10px);
+            background: rgba(255, 255, 255, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 0.5rem;
+            border-radius: 12px;
+        }
+
+        .tab-trigger {
+            padding: 0.75rem 1rem;
+            border: none;
+            background: transparent;
+            cursor: pointer;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            transition: all 0.3s ease;
+            color: var(--text-gray);
+        }
+
+        .tab-trigger.active {
+            background: rgba(255, 255, 255, 0.6);
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+            color: var(--primary);
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .card {
+            backdrop-filter: blur(10px);
+            background: rgba(255, 255, 255, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.6);
+            border-radius: 16px;
+            padding: 2rem;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .card:hover {
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+            background: rgba(255, 255, 255, 0.5);
+        }
+
+        .status-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .status-card {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .status-card::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, rgba(79, 70, 229, 0.1) 0%, rgba(168, 85, 247, 0.1) 100%);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .status-card:hover::before {
+            opacity: 1;
+        }
+
+        .status-card-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .status-label {
+            font-size: 12px;
+            font-weight: 500;
+            color: var(--text-gray);
+            margin-bottom: 0.5rem;
+        }
+
+        .status-value {
+            font-size: 36px;
+            font-weight: 700;
+            background: linear-gradient(135deg, #4F46E5 0%, #A855F7 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 1rem;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 600;
+            border: 1px solid;
+        }
+
+        .badge-online {
+            background: rgba(16, 185, 129, 0.2);
+            color: #059669;
+            border-color: rgba(16, 185, 129, 0.3);
+        }
+
+        .badge-offline {
+            background: rgba(239, 68, 68, 0.2);
+            color: #DC2626;
+            border-color: rgba(239, 68, 68, 0.3);
+        }
+
+        .badge-game {
+            background: rgba(59, 130, 246, 0.2);
+            color: #1D4ED8;
+            border-color: rgba(59, 130, 246, 0.3);
+        }
+
+        .status-indicator {
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            margin-left: 0.5rem;
+            vertical-align: middle;
+        }
+
+        .indicator-online {
+            background: var(--green);
+            animation: pulse 2s infinite;
+        }
+
+        .indicator-offline {
+            background: var(--red);
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
+        }
+
+        .stat-card {
+            backdrop-filter: blur(10px);
+            background: rgba(255, 255, 255, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            padding: 1rem;
+            border-radius: 12px;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .stat-card:hover {
+            background: rgba(255, 255, 255, 0.4);
+        }
+
+        .stat-label {
+            font-size: 11px;
+            color: var(--text-gray);
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-value {
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--text-dark);
+        }
+
+        .history-container {
+            max-height: 400px;
+            overflow-y: auto;
+            padding-right: 0.5rem;
+        }
+
+        .history-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 1rem;
+            margin-bottom: 0.75rem;
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        .history-item:hover {
+            background: rgba(255, 255, 255, 0.5);
+            border-color: rgba(255, 255, 255, 0.4);
+        }
+
+        .history-left {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            flex: 1;
+        }
+
+        .history-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            background: linear-gradient(135deg, rgba(79, 70, 229, 0.2) 0%, rgba(168, 85, 247, 0.2) 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--primary);
+            font-size: 18px;
+        }
+
+        .history-info h4 {
+            font-size: 14px;
+            color: var(--text-dark);
+            margin-bottom: 0.25rem;
+        }
+
+        .history-info p {
+            font-size: 12px;
+            color: var(--text-gray);
+        }
+
+        .history-badge {
+            padding: 0.4rem 0.8rem;
+            border-radius: 6px;
+            font-size: 11px;
+            font-weight: 600;
+            border: 1px solid;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 3rem 1rem;
+        }
+
+        .empty-state-icon {
+            font-size: 48px;
+            opacity: 0.3;
+            margin-bottom: 1rem;
+        }
+
+        .empty-state p {
+            color: var(--text-gray);
+        }
+
+        footer {
+            border-top: 1px solid rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            background: rgba(255, 255, 255, 0.2);
+            margin-top: 3rem;
+            padding: 1.5rem;
+            text-align: center;
+            color: var(--text-gray);
+            font-size: 12px;
+        }
+
+        @media (max-width: 768px) {
+            .header-container {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .header-right {
+                text-align: center;
+            }
+
+            .status-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        .history-container::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .history-container::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .history-container::-webkit-scrollbar-thumb {
+            background: rgba(79, 70, 229, 0.3);
+            border-radius: 3px;
+        }
+
+        .history-container::-webkit-scrollbar-thumb:hover {
+            background: rgba(79, 70, 229, 0.5);
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="header-container">
+            <div class="header-left">
+                <div class="header-icon">🎮</div>
+                <div class="header-title">
+                    <h1>Roblox Monitor</h1>
+                    <p>RafaelaBR672</p>
+                </div>
+            </div>
+            <div class="header-right">
+                <p>Última atualização</p>
+                <p id="lastUpdate">--:--:--</p>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <div class="tabs-container">
+            <div class="tabs-list">
+                <button class="tab-trigger active" onclick="switchTab('status')">
+                    ⚡ Status em Tempo Real
+                </button>
+                <button class="tab-trigger" onclick="switchTab('history')">
+                    🕐 Histórico
+                </button>
+            </div>
+
+            <div id="status" class="tab-content active">
+                <div class="status-grid">
+                    <div class="card status-card">
+                        <div class="status-card-content">
+                            <p class="status-label">Status Atual</p>
+                            <div style="display: flex; align-items: center; gap: 0.5rem;">
+                                <h2 class="status-value" id="currentStatus">Carregando...</h2>
+                                <span class="status-indicator indicator-offline" id="statusIndicator"></span>
+                            </div>
+                            <span class="status-badge badge-offline" id="statusBadge">Offline</span>
+                        </div>
+                    </div>
+
+                    <div class="card status-card">
+                        <div class="status-card-content">
+                            <p class="status-label">Jogo Atual</p>
+                            <h2 class="status-value" style="font-size: 24px;">
+                                <span id="gameInfo">Carregando...</span>
+                            </h2>
+                            <p style="color: var(--text-gray); font-size: 14px; margin-top: 1rem;">
+                                <span id="gameStatus">Carregando...</span>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <p class="stat-label">Total de Sessões</p>
+                        <p class="stat-value" id="totalSessions">0</p>
+                    </div>
+                    <div class="stat-card">
+                        <p class="stat-label">Entradas</p>
+                        <p class="stat-value" id="totalEntradas">0</p>
+                    </div>
+                    <div class="stat-card">
+                        <p class="stat-label">Saídas</p>
+                        <p class="stat-value" id="totalSaidas">0</p>
+                    </div>
+                    <div class="stat-card">
+                        <p class="stat-label">Tempo Monitorado</p>
+                        <p class="stat-value">24h</p>
+                    </div>
+                </div>
+            </div>
+
+            <div id="history" class="tab-content">
+                <div class="card">
+                    <h3 style="margin-bottom: 1.5rem;">Histórico de Atividades</h3>
+                    <div class="history-container" id="historyContainer">
+                        <div class="empty-state">
+                            <div class="empty-state-icon">🕐</div>
+                            <p>Carregando histórico...</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <p>Monitoramento em tempo real • Atualizado a cada 5 minutos</p>
+    </footer>
+
+    <script>
+        function switchTab(tabName) {
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            document.querySelectorAll('.tab-trigger').forEach(btn => {
+                btn.classList.remove('active');
+            });
+
+            document.getElementById(tabName).classList.add('active');
+            event.target.classList.add('active');
+        }
+
+        function updateTime() {
+            const now = new Date();
+            document.getElementById('lastUpdate').textContent = now.toLocaleTimeString('pt-BR');
+        }
+
+        async function fetchData() {
+            try {
+                const statusResponse = await fetch('/api/status');
+                if (statusResponse.ok) {
+                    const statusData = await statusResponse.json();
+                    updateStatusDisplay(statusData.status);
+                }
+
+                const logResponse = await fetch('/api/activity-log');
+                if (logResponse.ok) {
+                    const logData = await logResponse.json();
+                    updateHistoryDisplay(logData);
+                }
+
+                updateTime();
+            } catch (error) {
+                console.error('Erro ao buscar dados:', error);
+            }
+        }
+
+        function updateStatusDisplay(status) {
+            const statusElement = document.getElementById('currentStatus');
+            const badgeElement = document.getElementById('statusBadge');
+            const indicatorElement = document.getElementById('statusIndicator');
+            const gameInfoElement = document.getElementById('gameInfo');
+            const gameStatusElement = document.getElementById('gameStatus');
+
+            statusElement.textContent = status;
+            badgeElement.textContent = status;
+
+            badgeElement.className = 'status-badge';
+            if (status === 'Online' || status === 'No Jogo') {
+                badgeElement.classList.add('badge-online');
+                indicatorElement.className = 'status-indicator indicator-online';
+                gameStatusElement.textContent = status === 'No Jogo' ? 'Jogando atualmente' : 'Conectado ao Roblox';
+                gameInfoElement.textContent = status === 'No Jogo' ? 'Em um jogo' : 'Não está jogando';
+            } else if (status === 'No Studio') {
+                badgeElement.classList.add('badge-game');
+                indicatorElement.className = 'status-indicator indicator-online';
+                gameStatusElement.textContent = 'No Studio';
+                gameInfoElement.textContent = 'Desenvolvendo';
+            } else {
+                badgeElement.classList.add('badge-offline');
+                indicatorElement.className = 'status-indicator indicator-offline';
+                gameStatusElement.textContent = 'Desconectado';
+                gameInfoElement.textContent = 'Não está jogando';
+            }
+        }
+
+        function updateHistoryDisplay(logs) {
+            const container = document.getElementById('historyContainer');
+            const totalSessions = logs.length;
+            const entradas = logs.filter(l => l.evento === 'Entrada').length;
+            const saidas = logs.filter(l => l.evento === 'Saída').length;
+
+            document.getElementById('totalSessions').textContent = totalSessions;
+            document.getElementById('totalEntradas').textContent = entradas;
+            document.getElementById('totalSaidas').textContent = saidas;
+
+            if (logs.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">🕐</div>
+                        <p>Nenhuma atividade registrada ainda</p>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = logs.reverse().map(log => {
+                const icon = log.evento === 'Entrada' ? '➡️' : '⬅️';
+                const badgeClass = log.status === 'Offline' ? 'badge-offline' : 'badge-online';
+                return `
+                    <div class="history-item">
+                        <div class="history-left">
+                            <div class="history-icon">${icon}</div>
+                            <div class="history-info">
+                                <h4>${log.evento}</h4>
+                                <p>${log.data_hora}</p>
+                            </div>
+                        </div>
+                        <span class="history-badge ${badgeClass}">${log.status}</span>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        updateTime();
+        fetchData();
+
+        setInterval(fetchData, 30000);
+        setInterval(updateTime, 1000);
+    </script>
+</body>
+</html>
